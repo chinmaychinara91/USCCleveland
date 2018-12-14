@@ -1,5 +1,5 @@
 clc;clear all;close all;restoredefaultpath;
-
+addpath(genpath('.'));
 % Set the input arguments
 moving_filename='/big_disk/ajoshi/for_cleveland/pre_and_post_op_MRIs/M1976H8L/postMRI.nii';
 gzip(moving_filename);
