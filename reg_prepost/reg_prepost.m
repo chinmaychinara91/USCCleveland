@@ -1,7 +1,6 @@
 
 function reg_prepost(bse_exe, mov_img, ref_img, reg_img, err_file)
 
-mov_img_bse=[tempname(),'.nii.gz'];
 ref_img_bse=[tempname(),'.nii.gz'];
 outdir = tempname();
 
@@ -9,17 +8,16 @@ outdir = tempname();
 %extensions
 
 gzip(mov_img,outdir);
-[pth, fname]=fileparts(mov_img);
+[pth, fname, ext]=fileparts(mov_img);
 mov_img=fullfile(outdir,[fname,'.nii.gz']);
 gzip(ref_img,outdir);
 
-ref_img=[ref_img,'.gz'];
-[pth, fname]=fileparts(ref_img);
+[pth, fname, ext]=fileparts(ref_img);
 ref_img=fullfile(outdir,[fname,'.nii.gz']);
 
 similarity='cr';
 %perform skull stripping used for later
-system(sprintf('%s -i %s -o %s --auto --trim',bse_exe, mov_img, mov_img_bse));
+system(sprintf('%s -i %s -o %s --auto --trim',bse_exe, ref_img, ref_img_bse));
 
 %perform rigid registration
 usc_rigid_reg(mov_img, ref_img, reg_img, similarity, [])
