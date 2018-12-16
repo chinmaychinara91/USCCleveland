@@ -4,7 +4,7 @@ addpath(genpath('.'));
 %% Set the input arguments
 bse_exe = '/home/ajoshi/BrainSuite18a/bin/bse';
 % subject ID
-sub = 'M1997HCD';
+sub = 'M1976H8L';
 
 %% correct the paths
 mov_img=['/big_disk/ajoshi/for_cleveland/pre_and_post_op_MRIs/',sub,'/postMRI.nii'];
