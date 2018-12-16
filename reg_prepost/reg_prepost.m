@@ -10,12 +10,12 @@ outdir = tempname();
 
 gzip(mov_img,outdir);
 [pth, fname]=fileparts(mov_img);
-mov_img=fullfile(out_dir,fname,'nii.gz');
+mov_img=fullfile(outdir,[fname,'.nii.gz']);
 gzip(ref_img,outdir);
 
 ref_img=[ref_img,'.gz'];
 [pth, fname]=fileparts(ref_img);
-ref_img=fullfile(out_dir,fname,'nii.gz');
+ref_img=fullfile(outdir,[fname,'.nii.gz']);
 
 similarity='cr';
 %perform skull stripping used for later
