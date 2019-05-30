@@ -56,8 +56,10 @@ toc
 
 msk.img(ind) = lab+1000; % newly generated labels
 msk.img(vmsk.img>0)=vmsk.img(vmsk.img>0); % electrode labels
-msk.hdr.dime.datatype=8; msk.hdr.bitpix=32;
-save_untouch_nii(msk,'rois.nii.gz');
+%msk.hdr.dime.datatype=8; msk.hdr.bitpix=32;
+msk.hdr.dime.datatype=vlab.hdr.dime.datatype;
+msk.hdr.dime.bitpix=vlab.hdr.dime.bitpix;
+save_untouch_nii(msk,'rois_v2.nii.gz');
 
 
 
