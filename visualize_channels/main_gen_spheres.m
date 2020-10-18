@@ -39,7 +39,8 @@ end
 
 s=combine_surf(h);
 
-
+% Figure is shown on the screen as well as dfs file is written that can be
+% loaded into BrainSuite
 figure;
 patch('faces',s.faces,'vertices',s.vertices,'facevertexcdata',s.vcolor,'edgecolor','none','facecolor','flat');
 axis equal;axis off;camlight;material dull;
