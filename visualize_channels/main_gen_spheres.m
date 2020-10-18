@@ -3,9 +3,9 @@ addpath(genpath('/ImagePTE1/ajoshi/code_farm/svreg/src'));
 addpath(genpath('/ImagePTE1/ajoshi/code_farm/svreg/3rdParty'));
 NUM_COLORS=15;
 
-out_dfs='/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/Andrew_Pre-op_MRI_and_EZ_Map/Subject116/contacts_spheres.dfs';
-ch_info='/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/Andrew_Pre-op_MRI_and_EZ_Map/Subject116/ChnInfo.mat';
-t1_img='/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/Andrew_Pre-op_MRI_and_EZ_Map/Subject116/T1s.nii.gz';
+out_dfs='/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/contacts_spheres.dfs';
+ch_info='/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/ChnInfo.mat';
+t1_img='/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.nii.gz';
 
 load(ch_info);
 v= load_untouch_nii_gz(t1_img);
