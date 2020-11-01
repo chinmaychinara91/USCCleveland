@@ -53,8 +53,8 @@ import time
 
 
 # study directory where all the grayordinate files lie
-CTRL_DIR ='/big_disk/ajoshi/for_andrew_fmri/CN_new' #/big_disk/ajoshi/ADHD_Peking_gord' #/big_disk/ajoshi/ADHD_Peking_gord'
-#CTRL_DIR = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl'
+#CTRL_DIR ='/big_disk/ajoshi/for_andrew_fmri/CN_new' #/big_disk/ajoshi/ADHD_Peking_gord' #/big_disk/ajoshi/ADHD_Peking_gord'
+CTRL_DIR = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl'
 
 #SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/study13072_rest_bold.32k.GOrd.filt.mat'
 SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1988I21_rest_bold.32k.GOrd.filt.mat' # #'/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/study12554_rest_bold.32k.GOrd.filt.mat'
