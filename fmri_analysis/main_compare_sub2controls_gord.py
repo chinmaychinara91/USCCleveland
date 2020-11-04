@@ -27,19 +27,19 @@ BFPPATH = '/ImagePTE1/ajoshi/code_farm/bfp'
 sys.path.append(os.path.join(BFPPATH, 'src', 'stats'))
 sys.path.append(os.path.join(BFPPATH, 'src', 'stats', 'BrainSync'))
 
-from brainsync import brainSync, normalizeData
+import time
+import numpy as np
+import scipy as sp
+import scipy.io as spio
+from sklearn.decomposition import PCA
+from statsmodels.stats.multitest import fdrcorrection
+from tqdm import tqdm
+from grayord_utils import vis_grayord_sigpval, save2volbord_bci
+from stats_utils import (compare_sub2ctrl, dist2atlas_reg,
+                         read_bord_data, read_gord_data)
 from surfproc import (patch_color_attrib, smooth_patch, smooth_surf_function,
                       view_patch_vtk)
-from stats_utils import (compare_sub2ctrl, dist2atlas_reg,
-                         read_bord_data)
-from grayord_utils import vis_grayord_sigpval, save2volbord_bci
-from tqdm import tqdm
-from statsmodels.stats.multitest import fdrcorrection
-from sklearn.decomposition import PCA
-import scipy.io as spio
-import scipy as sp
-import numpy as np
-import time
+from brainsync import brainSync, normalizeData
 
 
 #from dfsio import readdfs
@@ -59,10 +59,11 @@ CTRL_DIR = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl'
 #SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/study13072_rest_bold.32k.GOrd.filt.mat'
 # SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1988I21_rest_bold.32k.GOrd.filt.mat' # #'/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/study12554_rest_bold.32k.GOrd.filt.mat'
 # '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/study12554_rest_bold.32k.GOrd.filt.mat'
-#SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1988I21_rest_bold.BOrd.mat'
-SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1979I24_rest_bold.BOrd.mat'
+#SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1988I21_rest_bold.32k.GOrd.filt.mat'
+#SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/study12525_rest_bold.BOrd.mat'
+SUB_DATA='/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1979I24_rest_bold.32k.GOrd.filt.mat'
 
-LEN_TIME = 150  # length of the time series
+LEN_TIME = 100  # length of the time series
 NUM_CTRL = 30  # Number of control subjects for the study
 
 
@@ -70,7 +71,7 @@ def main():
 
     print('Reading subjects')
 
-    ctrl_files = read_bord_data(data_dir=CTRL_DIR, num_sub=NUM_CTRL)
+    ctrl_files = read_gord_data(data_dir=CTRL_DIR, num_sub=NUM_CTRL)
 
     t0 = time.time()
     print('performing stats based on random pairwise distances')
@@ -87,15 +88,15 @@ def main():
     t1 = time.time()
 
     print(t1 - t0)
+    '''
+    save2volbord_bci(
+        (0.15-pval)*np.float32(pval < 0.15), '/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis/pval_borg.nii.gz', bfp_path=BFPPATH, smooth_std=1.5)
 
     save2volbord_bci(
-        (0.05-pval)*np.float32(pval < 0.05), '/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis/pval_borg.nii.gz', bfp_path=BFPPATH, smooth_std=0)
+        np.float32(pval < 0.05), '/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis/pval_borg_sig.nii.gz', bfp_path=BFPPATH, smooth_std=1.5)
 
     save2volbord_bci(
-        np.float32(pval < 0.05), '/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis/pval_borg_sig.nii.gz', bfp_path=BFPPATH, smooth_std=1)
-
-    save2volbord_bci(
-        (0.05-pval_fdr)*np.float32(pval_fdr < 0.05), '/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis/pval_borg_fdr_sig.nii.gz', bfp_path=BFPPATH, smooth_std=1.5)
+        np.float32(pval_fdr < 0.05), '/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis/pval_borg_fdr_sig.nii.gz', bfp_path=BFPPATH, smooth_std=1.5)
 
     #    sp.savez('pval_out200.npz', pval=pval, pval_fdr=pval_fdr)
     '''
@@ -106,7 +107,7 @@ def main():
         out_dir='/ImagePTE1/ajoshi/code_farm/USCCleveland/fmri_analysis',
         smooth_iter=1000,
         sig_alpha=0.05)
-        '''
+        
 
     print('Results saved')
 
