@@ -6,19 +6,19 @@ outdir = tempname();
 
 %zip the nii files, as the codes that are used later need .nii.gz
 %extensions
-
-gzip(mov_img,outdir);
 [pth, fname, ext]=fileparts(mov_img);
-mov_img=fullfile(outdir,[fname,'.nii.gz']);
-
 if ~strcmp(ext,'.gz')
-    gzip(ref_img,outdir);
+    gzip(mov_img,outdir);
+    mov_img=fullfile(outdir,[fname,'.nii.gz']);
 end
 
 [pth, fname, ext]=fileparts(ref_img);
+
 if ~strcmp(ext,'.gz')
+    gzip(ref_img,outdir);
     ref_img=fullfile(outdir,[fname,'.nii.gz']);
 end
+
 
 similarity='cr';
 %perform skull stripping used for later
