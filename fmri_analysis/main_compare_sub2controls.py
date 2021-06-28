@@ -62,7 +62,7 @@ CTRL_DIR = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl'
 #SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1988I21_rest_bold.BOrd.mat'
 SUB_DATA = '/big_disk/ajoshi/for_cleveland/bfpout/Ctrl/sub-F1988I21_rest_bold.BOrd.mat'
 
-LEN_TIME = 150  # length of the time series
+LEN_TIME = 50  # length of the time series
 NUM_CTRL = 30  # Number of control subjects for the study
 
 
