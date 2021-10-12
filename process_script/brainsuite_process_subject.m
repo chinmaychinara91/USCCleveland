@@ -34,9 +34,12 @@ BrainSuitePath=config.BrainSuitePath;
 
 bst_exe=fullfile(BrainSuitePath,'bin','cortical_extraction.sh');
 svreg_exe=fullfile(BrainSuitePath,'svreg','bin','svreg.sh');
-thicknessPVC_exe=fullfile(BrainSuitePath,'svreg','bin','thicknessPVC.sh');
-thickness_map2atlas_exe=fullfile(BrainSuitePath,'svreg','bin','svreg_thickness2atlas.sh');
+svreg_resample_exe=fullfile(BrainSuitePath,'svreg','bin','svreg_resample.sh');
+
 USCBrainbasename=fullfile(BrainSuitePath,'svreg','USCBrain','USCBrain');
+
+cmd=[bst_exe,' ',subbasename,' ',USCBrainbasename];
+unix(cmd);
 
 
 
