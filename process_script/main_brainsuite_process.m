@@ -1,4 +1,5 @@
 clc;clear all;close all;
+addpath(genpath('/ImagePTE1/ajoshi/code_farm/bfp/src'));
 
 configfile = '/ImagePTE1/ajoshi/code_farm/USCCleveland/data/config_brainsuite.ini';
 t1file = '/ImagePTE1/ajoshi/code_farm/USCCleveland/data/t1list.txt';
@@ -14,6 +15,12 @@ for j = 1:length(t1subs)
         subbasename = fullfile(pth,subbasename(1:end-4));
     else
         subbasename = fullfile(pth,subbasename);
+    end
+    
+    
+    if SVReg_done_check(subbasename)
+        fprintf('BrainSuite processing is already done for %s',subbasename);
+        continue;
     end
     
     brainsuite_process_subject(configfile,subbasename);
