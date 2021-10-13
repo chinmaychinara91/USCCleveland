@@ -49,7 +49,7 @@ cmd=[bst_exe,' ',subbasename];
 unix(cmd);
 
 cmd=[svreg_exe,' ',subbasename,' ',USCBrainbasename];
-unix(cmd);
+%unix(cmd);
 
 
 
