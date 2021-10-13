@@ -7,7 +7,7 @@ To run the workflow, make sure that the following three files are in the same di
 * t1list.txt
 
 A sample of these three files can be downloaded with the release.
-[Release_V1]
+[Release_V1](https://github.com/ajoshiusc/USCCleveland/releases/tag/brainsuite_process_v1)
 
 
 once all three files are in a directory, simply execute the `brainsuite_process_all.exe`. The executable will do the following for each T1 file:
