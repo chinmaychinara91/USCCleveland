@@ -38,9 +38,18 @@ svreg_resample_exe=fullfile(BrainSuitePath,'svreg','bin','svreg_resample.sh');
 
 USCBrainbasename=fullfile(BrainSuitePath,'svreg','USCBrain','USCBrain');
 
-cmd=[bst_exe,' ',subbasename,' ',USCBrainbasename];
+[pth,sub,ext]=fileparts(subbasename);
+subbasename_r = fullfile(pth,'MRI_1mm');
+
+cmd=[svreg_resample_exe,' ',subbasename,'.nii.gz ', subbasename_r,'.nii.gz'];
 unix(cmd);
 
+subbasename = subbasename_r;
+cmd=[bst_exe,' ',subbasename];
+unix(cmd);
+
+cmd=[svreg_exe,' ',subbasename,' ',USCBrainbasename];
+unix(cmd);
 
 
 
