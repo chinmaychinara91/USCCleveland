@@ -1,0 +1,5 @@
+C:\Users\ajosh\Downloads\data\t1data\OAS31171_MR_d0752\anat1\sub-OAS31171_ses-d0752_T1w.nii.gz
+C:\Users\ajosh\Downloads\data\t1data\OAS31169_MR_d0620\anat2\sub-OAS31169_ses-d0620_run-01_T1w.nii.gz
+C:\Users\ajosh\Downloads\data\t1data\OAS31170_MR_d2410\anat2\sub-OAS31170_ses-d2410_T1w.nii.gz
+C:\Users\ajosh\Downloads\data\t1data\OAS31172_MR_d0407\anat2\sub-OAS31172_ses-d0407_run-01_T1w.nii.gz
+C:\Users\ajosh\Downloads\data\t1data\OAS31172_MR_d1717\anat2\sub-OAS31172_ses-d1717_T1w.nii.gz
