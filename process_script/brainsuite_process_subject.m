@@ -28,13 +28,13 @@ config=ini2struct(configfile);
 fprintf(' done\n');
 %% Setting up the environment
 %%
-setenv('BrainSuiteDir',config.BrainSuitePath);
+setenv('BrainSuiteDir',config.brainsuitepath);
 
-BrainSuitePath=config.BrainSuitePath;
+BrainSuitePath=config.brainsuitepath;
 
-bst_exe=fullfile(BrainSuitePath,'bin','cortical_extraction.sh');
-svreg_exe=fullfile(BrainSuitePath,'svreg','bin','svreg.sh');
-svreg_resample_exe=fullfile(BrainSuitePath,'svreg','bin','svreg_resample.sh');
+bst_exe=fullfile(BrainSuitePath,'bin','cortical_extraction.cmd');
+svreg_exe=fullfile(BrainSuitePath,'svreg','bin','svreg.exe');
+svreg_resample_exe=fullfile(BrainSuitePath,'svreg','bin','svreg_resample.exe');
 
 USCBrainbasename=fullfile(BrainSuitePath,'svreg','USCBrain','USCBrain');
 
