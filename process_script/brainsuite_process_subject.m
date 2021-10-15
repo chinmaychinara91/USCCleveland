@@ -33,6 +33,8 @@ setenv('BrainSuiteDir',config.brainsuitepath);
 BrainSuitePath=config.brainsuitepath;
 
 bst_exe=fullfile(BrainSuitePath,'bin','cortical_extraction.cmd');
+skullfinder_exe=fullfile(BrainSuitePath,'bin','skullfinder.exe');
+
 svreg_exe=fullfile(BrainSuitePath,'svreg','bin','svreg.exe');
 svreg_resample_exe=fullfile(BrainSuitePath,'svreg','bin','svreg_resample.exe');
 
@@ -44,10 +46,16 @@ subbasename_r = fullfile(pth,'MRI_1mm');
 cmd=[svreg_resample_exe,' ',subbasename,'.nii.gz ', subbasename_r,'.nii.gz'];
 unix(cmd);
 
+% brainsuite cortical extraction
 subbasename = subbasename_r;
 cmd=[bst_exe,' ',subbasename];
 unix(cmd);
 
+% Skull finder
+cmd=[skullfinder_exe,' -i ', subbasename,'.nii.gz -o ',subbasename,'.skull.label.nii.gz -m ',subbasename,'.mask.nii.gz --scalplabel ',subbasename,'.scalp.label.nii.gz -s ',subbasename];
+unix(cmd);
+
+% svreg
 cmd=[svreg_exe,' ',subbasename,' ',USCBrainbasename];
 unix(cmd);
 
