@@ -13,35 +13,42 @@ def interpolate_labels(fromsurf=[], tosurf=[]):
     return tosurf
 
 
+hemi = 'left'
 
+outbase = 'mixedatlas'
 brannetome_base = '/ImagePTE1/ajoshi/code_farm/svreg/USCBrainMulti/Brainnetome/BCI-Brainnetome'
 uscbrain_base = '/ImagePTE1/ajoshi/code_farm/svreg/USCBrainMulti/USCBrain'
-left_surf_uscbrain_file = uscbrain_base + '.left.mid.cortex.dfs'
-left_surf_brainnetome_file = brannetome_base + '.left.mid.cortex.dfs'
+hemi_surf_uscbrain_file = uscbrain_base + '.'+hemi+'.mid.cortex.dfs'
+hemi_surf_brainnetome_file = brannetome_base + '.'+hemi+'.mid.cortex.dfs'
+hemi_surf_out_file = outbase + '.'+hemi+'.mid.cortex.dfs'
 
 
+uscbrain_ids = [[502, 503, 504, 505]]
+brainnnetome_ids = [[163, 164, 165, 166,
+                     167, 168, 169, 170, 171, 172, 173, 174]]
+uscbrain_new_ids = [[563, 564, 565, 566,
+                     567, 568, 569, 570, 571, 572, 573, 574]]
 
+uscbrain_hemi = readdfs(hemi_surf_uscbrain_file)
+brainnetome_hemi = readdfs(hemi_surf_brainnetome_file)
+brainnetome_hemi.vertices = uscbrain_hemi.vertices
+uscbrain_hemi = patch_color_labels(uscbrain_hemi)
+brainnetome_hemi = patch_color_labels(brainnetome_hemi)
 
-uscbrain_ids = [[502,503,504,505]]
-brainnnetome_ids = [[163,164,165,166,167,168,169,170,171,172,173,174]]
+view_patch_vtk(uscbrain_hemi)
+view_patch_vtk(brainnetome_hemi)
 
-
-uscbrain_left = readdfs(left_surf_uscbrain_file)
-brainnetome_left = readdfs(left_surf_brainnetome_file)
-brainnetome_left.vertices = uscbrain_left.vertices
-uscbrain_left = patch_color_labels(uscbrain_left)
-brainnetome_left = patch_color_labels(brainnetome_left)
-
-view_patch_vtk(uscbrain_left)
-view_patch_vtk(brainnetome_left)
 
 class btmlCl:
     pass
 
+
 btml = btmlCl()
+
 
 class ubCl:
     pass
+
 
 ub = ubCl()
 
@@ -49,32 +56,25 @@ for i in range(len(uscbrain_ids)):
     uid = uscbrain_ids[i]
     bid = brainnnetome_ids[i]
 
-    u_ind = np.in1d(uscbrain_left.labels, uid).nonzero()[0]
-    ub.labels = uscbrain_left.labels[u_ind]
-    ub.vertices = uscbrain_left.vertices[u_ind,]
+    u_ind = np.in1d(uscbrain_hemi.labels, uid).nonzero()[0]
+    ub.labels = uscbrain_hemi.labels[u_ind]
+    ub.vertices = uscbrain_hemi.vertices[u_ind, ]
 
-    b_ind = np.in1d(brainnetome_left.labels, bid).nonzero()[0]
-    btml.labels = brainnetome_left.labels[b_ind]
-    btml.vertices = brainnetome_left.vertices[b_ind,]
-
-
+    b_ind = np.in1d(brainnetome_hemi.labels, bid).nonzero()[0]
+    btml.labels = brainnetome_hemi.labels[b_ind]
+    btml.vertices = brainnetome_hemi.vertices[b_ind, ]
 
     print('Replacing', uid)
     print('With', bid)
 
-    
     interpolate_labels(fromsurf=btml, tosurf=ub)
 
-    uscbrain_left.labels[u_ind] = ub.labels
+    uscbrain_hemi.labels[u_ind] = ub.labels
 
-uscbrain_left = patch_color_labels(uscbrain_left)
-brainnetome_left = patch_color_labels(brainnetome_left)
+uscbrain_hemi = patch_color_labels(uscbrain_hemi)
+brainnetome_hemi = patch_color_labels(brainnetome_hemi)
 
-view_patch_vtk(uscbrain_left)
-
-
+view_patch_vtk(uscbrain_hemi)
 
 
-
-
-
+writedfs(hemi_surf_out_file, uscbrain_hemi)
