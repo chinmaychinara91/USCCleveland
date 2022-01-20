@@ -13,7 +13,7 @@ def interpolate_labels(fromsurf=[], tosurf=[]):
     return tosurf
 
 
-hemi = 'left'
+hemi = 'right'
 
 outbase = 'mixedatlas'
 brannetome_base = '/ImagePTE1/ajoshi/code_farm/svreg/USCBrainMulti/Brainnetome/BCI-Brainnetome'
@@ -21,6 +21,7 @@ uscbrain_base = '/ImagePTE1/ajoshi/code_farm/svreg/USCBrainMulti/USCBrain'
 hemi_surf_uscbrain_file = uscbrain_base + '.'+hemi+'.mid.cortex.dfs'
 hemi_surf_brainnetome_file = brannetome_base + '.'+hemi+'.mid.cortex.dfs'
 hemi_surf_out_file = outbase + '.'+hemi+'.mid.cortex.dfs'
+hemi_surf_smooth_out_file = outbase + '.'+hemi+'.smooth.mid.cortex.dfs'
 
 
 uscbrain_ids = [[502, 503, 504, 505]]
@@ -31,6 +32,7 @@ uscbrain_new_ids = [[563, 564, 565, 566,
 
 uscbrain_hemi = readdfs(hemi_surf_uscbrain_file)
 brainnetome_hemi = readdfs(hemi_surf_brainnetome_file)
+brainnetome_hemi_vertices = brainnetome_hemi.vertices
 brainnetome_hemi.vertices = uscbrain_hemi.vertices
 uscbrain_hemi = patch_color_labels(uscbrain_hemi)
 brainnetome_hemi = patch_color_labels(brainnetome_hemi)
@@ -78,3 +80,8 @@ view_patch_vtk(uscbrain_hemi)
 
 
 writedfs(hemi_surf_out_file, uscbrain_hemi)
+
+uscbrain_hemi.vertices = brainnetome_hemi_vertices
+
+writedfs(hemi_surf_smooth_out_file, uscbrain_hemi)
+
