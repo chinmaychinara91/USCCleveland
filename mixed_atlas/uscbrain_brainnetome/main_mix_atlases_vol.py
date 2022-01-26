@@ -77,9 +77,11 @@ f.labels = np.concatenate((lsurf.labels, rsurf.labels,
 t = interpolate_labels(fromsurf=f, tosurf=t)
 
 # here make sure that hanns labels are not modified TBD
+
+
 uscbrain_data = vol_img * 0
 uscbrain_data[ind] = t.labels
-
+uscbrain_data[vol_img == 2000] = 2000
 
 bn = ni.load_img(
     '/ImagePTE1/ajoshi/code_farm/svreg/USCBrainMulti/Brainnetome/BCI-Brainnetome.label.nii.gz')
@@ -90,7 +92,7 @@ bn = ni.load_img(
 bn_data = bn.get_fdata()
 
 ind = np.where(bn_data > 210)
-uscbrain_data[ind] = bn_data[ind]
+uscbrain_data[ind] = 400 + bn_data[ind]  # Map Brainnetome subcortical IDs, which are 210> to USCBrain subcortical ID range (>600)
 
 uscbrain = ni.new_img_like(BCI_base+'.label.nii.gz', np.int16(uscbrain_data))
 

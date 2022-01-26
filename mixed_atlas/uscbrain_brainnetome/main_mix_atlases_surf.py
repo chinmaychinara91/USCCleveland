@@ -31,6 +31,7 @@ uscbrain_new_ids = [[563, 564, 565, 566,
                      567, 568, 569, 570, 571, 572, 573, 574]]
 
 uscbrain_hemi = readdfs(hemi_surf_uscbrain_file)
+uscbrain_hemi_labs = uscbrain_hemi.labels.copy()
 brainnetome_hemi = readdfs(hemi_surf_brainnetome_file)
 brainnetome_hemi_vertices = brainnetome_hemi.vertices
 brainnetome_hemi.vertices = uscbrain_hemi.vertices
@@ -96,3 +97,6 @@ uscbrain_hemi.vertices = brainnetome_hemi_vertices
 
 writedfs(hemi_surf_out_file, uscbrain_hemi)
 
+uscbrain_hemi.labels = uscbrain_hemi_labs
+
+writedfs(hemi_surf_smooth_out_file, uscbrain_hemi)
