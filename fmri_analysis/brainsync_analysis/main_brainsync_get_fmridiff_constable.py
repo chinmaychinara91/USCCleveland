@@ -8,7 +8,8 @@ import glob
 from tqdm import tqdm
 
 # get atlas
-atlas_data = np.load('Output_Yale_grp_atlas.npz')['atlas_data']  # , X2=X2, Os=Os)
+atlas_data = np.load('Output_Yale_grp_atlas.npz')[
+    'atlas_data']  # , X2=X2, Os=Os)
 atlas_data2, _, _ = normalizeData(atlas_data)
 print(np.max(atlas_data2-atlas_data))
 
@@ -32,7 +33,6 @@ for subdir in subids:
 num_sub = len(sub_files)
 
 
-
 f = spio.loadmat(sub_files[0])['dtseries']
 
 numT = f.shape[1]
@@ -46,25 +46,20 @@ for i, f in enumerate(tqdm(sub_files)):
 num_vtx = fmri_data.shape[1]
 
 
-
-
 atlas_labels = '/ImagePTE1/ajoshi/code_farm/bfp/supp_data/USCBrain_grayordinate_labels.mat'
 atlas = spio.loadmat(atlas_labels)
 gord_labels = atlas['labels'].squeeze()
-label_ids = np.unique(gord_labels) 
+label_ids = np.unique(gord_labels)
 
 # calculate vertiexwise mean and variance for trainnon epi data
 # fmri diff for epilepsy
-fdiff_sub = np.zeros((len(label_ids), num_sub))
+fdiff_sub = np.zeros((num_vtx, num_sub))
 
 for subno in range(num_sub):
     d, _ = brainSync(atlas_data, fmri_data[:, :, subno])
 
-    for i, id in enumerate(label_ids):
-        idx = gord_labels == id
-        data = np.linalg.norm(
-            atlas_data[:, idx] - d[:, idx])/np.sqrt(np.sum(idx))
-        fdiff_sub[i, subno] = data
+    data = np.linalg.norm(atlas_data - d, axis=0)
+    fdiff_sub[:, subno] = data
 
 
 np.savez('Constable_BOrd_fmridiff_USCBrain.npz',
@@ -76,51 +71,21 @@ fdiff_mean = np.mean(fdiff_sub, axis=1)
 fdiff_std = np.std(fdiff_sub, axis=1)
 
 
-nsub_epi = epi_data.shape[2]
+nsub = fmri_data.shape[2]
 # fmri diff for epilepsy
-fdiff_sub = np.zeros((len(label_ids), nsub_epi))
-fdiff_sub_z = np.zeros((len(label_ids), nsub_epi))
+fdiff_sub = np.zeros((len(label_ids), nsub))
+fdiff_sub_z = np.zeros((len(label_ids), nsub))
 
-for subno in range(nsub_epi):
-    d, _ = brainSync(atlas_data, epi_data[:, :, subno])
+for subno in range(nsub):
+    d, _ = brainSync(atlas_data, fmri_data[:, :, subno])
+    data = np.linalg.norm(atlas_data - d, axis=1)
+    fdiff_sub[:, subno] = data
+    fdiff_sub_z[:, subno] = (data - fdiff_mean[i])/fdiff_std[i]
 
-    for i, id in enumerate(label_ids):
-        idx = gord_labels == id
-        data = np.linalg.norm(
-            atlas_data[:, idx] - d[:, idx])/np.sqrt(np.sum(idx))
-        fdiff_sub[i, subno] = data
-        fdiff_sub_z[i, subno] = (data - fdiff_mean[i])/fdiff_std[i]
-
-np.savez('PTE_fmridiff_USCBrain.npz',
+np.savez('Constable_fmridiff_USCBrain.npz',
          fdiff_sub=fdiff_sub,
          fdiff_sub_z=fdiff_sub_z,
-         label_ids=label_ids,
-         labels=gord_labels,
-         sub_ids=epi_ids)
-
-
-# fmri diff for nonepilepsy
-nsub_nonepi = nonepi_data.shape[2]
-fdiff_sub = np.zeros((len(label_ids), nsub_nonepi))
-fdiff_sub_z = np.zeros((len(label_ids), nsub_nonepi))
-
-for subno in range(nsub_nonepi):
-    d, _ = brainSync(atlas_data, nonepi_data[:, :, subno])
-
-    for i, id in enumerate(label_ids):
-        idx = gord_labels == id
-        data = np.linalg.norm(
-            atlas_data[:, idx] - d[:, idx])/np.sqrt(np.sum(idx))
-        fdiff_sub[i, subno] = data
-        fdiff_sub_z[i, subno] = (data - fdiff_mean[i])/fdiff_std[i]
-
-
-np.savez('NONPTE_fmridiff_USCBrain.npz',
-         fdiff_sub=fdiff_sub,
-         fdiff_sub_z=fdiff_sub_z,
-         label_ids=label_ids,
-         labels=gord_labels,
-         sub_ids=nonepi_ids)
+         sub_ids=sub_ids)
 
 
 print('done')
