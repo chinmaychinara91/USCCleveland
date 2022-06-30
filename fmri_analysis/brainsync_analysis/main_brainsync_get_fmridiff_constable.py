@@ -50,17 +50,11 @@ num_vtx = fmri_data.shape[1]
 # fmri diff for epilepsy
 fdiff_sub = np.zeros((num_vtx, num_sub))
 
-for subno in range(num_sub):
+for subno in tqdm(range(num_sub)):
     d, _ = brainSync(atlas_data, fmri_data[:, :, subno])
 
     data = np.linalg.norm(atlas_data - d, axis=0)
     fdiff_sub[:, subno] = data
-
-
-np.savez('Constable_BOrd_fmridiff_USCBrain.npz',
-         fdiff_sub=fdiff_sub,
-         sub_ids=sub_ids)
-
 
 fdiff_mean = np.mean(fdiff_sub, axis=1)
 fdiff_std = np.std(fdiff_sub, axis=1)
@@ -77,7 +71,7 @@ for subno in range(nsub):
     fdiff_sub[:, subno] = data
     fdiff_sub_z[:, subno] = (data - fdiff_mean)/fdiff_std
 
-np.savez('Constable_fmridiff_USCBrain.npz',
+np.savez('Constable_fmridiff_BOrd.npz',
          fdiff_sub=fdiff_sub,
          fdiff_sub_z=fdiff_sub_z,
          sub_ids=sub_ids)
