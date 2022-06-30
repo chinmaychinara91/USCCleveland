@@ -46,11 +46,6 @@ for i, f in enumerate(tqdm(sub_files)):
 num_vtx = fmri_data.shape[1]
 
 
-atlas_labels = '/ImagePTE1/ajoshi/code_farm/bfp/supp_data/USCBrain_grayordinate_labels.mat'
-atlas = spio.loadmat(atlas_labels)
-gord_labels = atlas['labels'].squeeze()
-label_ids = np.unique(gord_labels)
-
 # calculate vertiexwise mean and variance for trainnon epi data
 # fmri diff for epilepsy
 fdiff_sub = np.zeros((num_vtx, num_sub))
@@ -73,14 +68,14 @@ fdiff_std = np.std(fdiff_sub, axis=1)
 
 nsub = fmri_data.shape[2]
 # fmri diff for epilepsy
-fdiff_sub = np.zeros((len(label_ids), nsub))
-fdiff_sub_z = np.zeros((len(label_ids), nsub))
+fdiff_sub = np.zeros((num_vtx, nsub))
+fdiff_sub_z = np.zeros((num_vtx, nsub))
 
 for subno in range(nsub):
     d, _ = brainSync(atlas_data, fmri_data[:, :, subno])
-    data = np.linalg.norm(atlas_data - d, axis=1)
+    data = np.linalg.norm(atlas_data - d, axis=0)
     fdiff_sub[:, subno] = data
-    fdiff_sub_z[:, subno] = (data - fdiff_mean[i])/fdiff_std[i]
+    fdiff_sub_z[:, subno] = (data - fdiff_mean)/fdiff_std
 
 np.savez('Constable_fmridiff_USCBrain.npz',
          fdiff_sub=fdiff_sub,
