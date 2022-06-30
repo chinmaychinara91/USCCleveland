@@ -1,0 +1,5 @@
+*.pyc
+*.dfs
+*.json
+*.nii.gz
+*.xml
