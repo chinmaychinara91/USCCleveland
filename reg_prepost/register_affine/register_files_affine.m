@@ -1,4 +1,4 @@
-function [M_world, ref_loc, x_param] = register_files_affine(moving_filename, static_filename, output_filename, opts)
+function [M_world, ref_loc, x_param] = register_files_affine(moving_filename, static_filename, output_filename, opts, workdir)
 % Affine registration inteface for nifti files. This function uses nifti headers information. 
 %
 % Outputs: 
@@ -121,8 +121,13 @@ end
 
 
 % temp_dir
-workDir = tempname();
-mkdir(workDir);
+if ~exist("workdir")
+    workDir = tempname();
+end
+
+if ~exist("workDir",'dir')
+    mkdir(workDir);
+end
 
 % define variables
 workDir_static_file = fullfile(workDir, 'static_file.nii.gz');
