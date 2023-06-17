@@ -46,6 +46,6 @@ SE = strel('cube',3);
 vwrp.img=imerode(vwrp.img,SE);
 vwrp.img=bwareaopen(255.0*(vwrp.img>0),150,18);
 vwrp.img=imdilate(vwrp.img,SE);
-vwrp.img(:)=vwrp.img(:)*255;
+vwrp.img=cast(vwrp.img,'uint8')*255;
 save_untouch_nii_gz(vwrp, err_file, 2);
 
