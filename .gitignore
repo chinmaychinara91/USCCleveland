@@ -3,3 +3,4 @@
 *.json
 *.nii.gz
 *.xml
+*.npz
