@@ -8,6 +8,15 @@ from monai.transforms import (
     ScaleIntensityRangePercentiles,
 )
 import nibabel as nib
+import os
+import os.path
+import numpy as np
+from scipy.ndimage import gaussian_filter
+from skimage.morphology import remove_small_objects
+
+
+BrainSuitePATH = "/home/ajoshi/BrainSuite23a"
+ERR_THR = 100
 
 rigid_reg = Aligner()
 
@@ -15,10 +24,19 @@ rigid_reg = Aligner()
 mov_img_orig = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Ken_Post-op_MRI/sub-SUB102/sMRI/sub-SUB102-102_MRI.nii"
 mov_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Ken_Post-op_MRI/sub-SUB102/sMRI/sub-SUB102-102_MRI.bse.nii.gz"
 ref_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.bse.nii.gz"
+ref_img_mask = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.mask.nii.gz"
+ref_img_pvc_frac = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.pvc.frac.nii.gz"
+error_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.nii.gz"
+error_mask_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.mask.nii.gz"
+
 
 # rigidly warped image
 rigid_reg_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.nii.gz"
 rigid_reg_img_bse = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.bse.nii.gz"
+rigid_reg_img_mask = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.mask.nii.gz"
+rigid_reg_img_bfc = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.bfc.nii.gz"
+rigid_reg_img_pvc_label = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.pvc.label.nii.gz"
+rigid_reg_img_pvc_frac = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.pvc.frac.nii.gz"
 
 ddf = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/ddf.nii.gz"
 
@@ -51,31 +69,61 @@ nib.save(
 )
 
 
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "bse")
+    + " -i "
+    + rigid_reg_img
+    + " -o "
+    + rigid_reg_img_bse
+    + " --auto --trim --mask "
+    + rigid_reg_img_mask
+)
+os.system(cmd)
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "bfc")
+    + " -i "
+    + rigid_reg_img
+    + " -o "
+    + rigid_reg_img_bfc
+    + " --iterate -m "
+    + rigid_reg_img_mask
+)
+os.system(cmd)
 
 
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "pvc")
+    + " -i "
+    + rigid_reg_img_bfc
+    + " -o "
+    + rigid_reg_img_pvc_label
+    + " -f "
+    + rigid_reg_img_pvc_frac
+)
+os.system(cmd)
 
 
-% Load the images and normalize their intensities
-vref = load_untouch_nii_gz(ref_img);
-vwrp = load_untouch_nii_gz(reg_img);
-msk = load_untouch_nii_gz(ref_img_msk);
-vwrp.img=(255.0/max(double(vwrp.img(msk.img(:)>0))))*double(vwrp.img);
-vref.img=(255.0/max(double(vref.img(msk.img(:)>0))))*double(vref.img);
+# Load the images and normalize their intensities
+vref, _ = LoadImage()(ref_img_pvc_frac)
+vwrp, _ = LoadImage()(rigid_reg_img_pvc_frac)
+msk, _ = LoadImage()(ref_img_mask)
 
-% compute the error and smooth the error
-vwrp.img = sqrt((double(vref.img) - double(vwrp.img)).^2);
-vwrp.img = vwrp.img.*(msk.img>0);
-vwrp.img=smooth3(vwrp.img,'gaussian',[7,7,7],1);
+vwrp = (255.0 / np.max(vwrp[msk > 0])) * vwrp
+vref = (255.0 / np.max(vref[msk > 0])) * vref
 
-save_untouch_nii_gz(vwrp, [err_base,'.nii.gz'], 16);
 
-% Try to estimate the error mask using morphological operations
-vwrp.img=bwareaopen(255.0*(vwrp.img>128),50,18);
+# compute the error and smooth the error
+vwrp = np.sqrt((vref - vwrp) ** 2)
+vwrp = vwrp * (msk > 0)
+vwrp = gaussian_filter(vwrp, sigma=1)
 
-SE = strel('cube',3);
-vwrp.img=imerode(vwrp.img,SE);
-vwrp.img=bwareaopen(255.0*(vwrp.img>0),150,18);
-vwrp.img=imdilate(vwrp.img,SE);
-vwrp.img=cast(vwrp.img,'uint8')*255;
-save_untouch_nii_gz(vwrp, [err_base,'.mask.nii.gz'], 2);
+nib.save(nib.Nifti1Image(vwrp, rigid_reg.target.affine), error_img)
 
+error_mask = vwrp > ERR_THR
+nib.save(nib.Nifti1Image(np.int8(error_mask), rigid_reg.target.affine), error_mask_img)
+
+resection_mask = remove_small_objects(error_mask)
+nib.save(
+    nib.Nifti1Image(np.int8(resection_mask), rigid_reg.target.affine), error_mask_img
+)
