@@ -16,29 +16,29 @@ from skimage.morphology import remove_small_objects
 
 
 BrainSuitePATH = "/home/ajoshi/BrainSuite23a"
-ERR_THR = 75
+ERR_THR = 100
 
 rigid_reg = Aligner()
 
 
-mov_img_orig = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB113/sMRI/sub-SUB113-113_MRI.nii"
-mov_img = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB113/sMRI/sub-SUB113-113_MRI.bse.nii.gz"
-ref_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/T1s.bse.nii.gz"
-ref_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/T1s.mask.nii.gz"
-ref_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/T1s.pvc.frac.nii.gz"
-error_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/error_pre_post.nii.gz"
-error_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/error_pre_post.mask.nii.gz"
+mov_img_orig = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Ken_Post-op_MRI/sub-SUB102/sMRI/sub-SUB102-102_MRI.nii"
+mov_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Ken_Post-op_MRI/sub-SUB102/sMRI/sub-SUB102-102_MRI.bse.nii.gz"
+ref_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.bse.nii.gz"
+ref_img_mask = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.mask.nii.gz"
+ref_img_pvc_frac = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/T1s.pvc.frac.nii.gz"
+error_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.nii.gz"
+error_mask_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.mask.nii.gz"
 
 
 # rigidly warped image
-rigid_reg_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/post2pre.nii.gz"
-rigid_reg_img_bse = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/post2pre.bse.nii.gz"
-rigid_reg_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/post2pre.mask.nii.gz"
-rigid_reg_img_bfc = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/post2pre.bfc.nii.gz"
-rigid_reg_img_pvc_label = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/post2pre.pvc.label.nii.gz"
-rigid_reg_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/post2pre.pvc.frac.nii.gz"
+rigid_reg_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.nii.gz"
+rigid_reg_img_bse = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.bse.nii.gz"
+rigid_reg_img_mask = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.mask.nii.gz"
+rigid_reg_img_bfc = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.bfc.nii.gz"
+rigid_reg_img_pvc_label = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.pvc.label.nii.gz"
+rigid_reg_img_pvc_frac = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.pvc.frac.nii.gz"
 
-ddf = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject113/ddf.nii.gz"
+ddf = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/ddf.nii.gz"
 
 
 rigid_reg.affine_reg(
