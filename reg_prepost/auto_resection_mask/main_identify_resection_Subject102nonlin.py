@@ -40,6 +40,8 @@ error_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/
 error_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.nonlin.mask.nii.gz"
 error_init_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.nonlin.init.mask.nii.gz"
 
+error_mask_img_rigid = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.mask.nii.gz"
+target_msk_file = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/target.mask.nii.gz"
 
 # rigidly warped image
 rigid_reg_img = (
@@ -58,6 +60,16 @@ jac_file = (
 ddf = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/ddf_nonlin.nii.gz"
 
 
+tar_msk,target_mask_meta = LoadImage()(error_mask_img_rigid)
+tar_msk = gaussian_filter(tar_msk, sigma=1)
+tar_msk = np.float32(tar_msk < 1)
+
+nib.save(
+    nib.Nifti1Image(255 * (tar_msk), target_mask_meta['affine']),
+    target_msk_file,
+)
+
+
 nonlin_reg.nonlinear_reg(
     target_file=ref_img_pvc_frac,
     moving_file=rigid_reg_img_pvc_frac,
@@ -69,6 +81,7 @@ nonlin_reg.nonlinear_reg(
     max_epochs=1000,
     loss="mse",
     jacobian_determinant_file=jac_file,
+    target_mask=target_msk_file,
 )
 
 
@@ -84,7 +97,7 @@ vref = (255.0 / np.max(vref[msk > 0])) * vref
 # compute the error and smooth the error
 vwrp = np.sqrt((vref - vwrp) ** 2)
 vwrp = vwrp * (msk > 0)
-vwrp = gaussian_filter(vwrp, sigma=1)
+#vwrp = gaussian_filter(vwrp, sigma=1)
 
 nib.save(nib.Nifti1Image(vwrp, nonlin_reg.target.affine), error_img)
 
