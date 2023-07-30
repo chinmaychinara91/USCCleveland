@@ -78,7 +78,8 @@ class Warper:
 		elif loss == 'mi':
 			image_loss = GlobalMutualInformationLoss()
 		else:
-			AssertionError
+			raise AssertionError('Invalid Loss')
+
 
 		regularization = myBendingEnergyLoss() #GradEnergyLoss()
 		#######################
