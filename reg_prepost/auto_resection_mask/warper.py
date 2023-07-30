@@ -127,7 +127,7 @@ class Warper:
 			optimizerR.step()
 			# print('epoch_loss:'+dscolors.blue+f'{vol_loss:.4f}'+dscolors.clear
 			# 		+' for epoch:'+dscolors.blue+f'{epoch}'+'/'+f'{max_epochs}'+dscolors.clear+'     ',end='\r\033[A')
-			print('epoch:', dscolors.green,f'{epoch}/{max_epochs}',dscolors.clear, '',end='\r')
+			print('epoch:', dscolors.green,f'{epoch}/{max_epochs}','Loss:',dscolors.yellow,f'{vol_loss.detach().cpu().numpy():.2f}',dscolors.clear, '',end='\r')
 		
 		print('finished', dscolors.green,f'{max_epochs}',dscolors.clear, 'epochs')
 
