@@ -121,9 +121,9 @@ vwrp = gaussian_filter(vwrp, sigma=1)
 nib.save(nib.Nifti1Image(vwrp, rigid_reg.target.affine), error_img)
 
 error_mask = vwrp > ERR_THR
-nib.save(nib.Nifti1Image(np.int8(error_mask), rigid_reg.target.affine), error_mask_img)
+nib.save(nib.Nifti1Image(255*np.uint8(error_mask), rigid_reg.target.affine), error_mask_img)
 
 resection_mask = remove_small_objects(error_mask)
 nib.save(
-    nib.Nifti1Image(np.int8(resection_mask), rigid_reg.target.affine), error_mask_img
+    nib.Nifti1Image(255*np.uint8(resection_mask), rigid_reg.target.affine), error_mask_img
 )
