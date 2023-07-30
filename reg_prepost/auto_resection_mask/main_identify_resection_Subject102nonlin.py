@@ -50,6 +50,10 @@ rigid_reg_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Su
 rigid_reg_img_bfc = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.bfc.nii.gz"
 rigid_reg_img_pvc_label = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.pvc.label.nii.gz"
 rigid_reg_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/post2pre.pvc.frac.nii.gz"
+jac_file = (
+    "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/jacobian.nii.gz"
+)
+
 
 ddf = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/ddf_nonlin.nii.gz"
 
@@ -58,5 +62,11 @@ nonlin_reg.nonlinear_reg(
     target_file=ref_img_pvc_frac,
     moving_file=rigid_reg_img_pvc_frac,
     output_file=nonlin_reg_img_pvc_frac,
-    ddf_file=ddf,reg_penalty=3, nn_input_size=64, lr=1e-3, max_epochs=1000, loss='mse',
+    ddf_file=ddf,
+    reg_penalty=3,
+    nn_input_size=64,
+    lr=1e-3,
+    max_epochs=1000,
+    loss="mse",
+    jacobian_determinant_file=jac_file,
 )

@@ -3,7 +3,7 @@
 from monai.utils import set_determinism
 from monai.networks.nets import GlobalNet, LocalNet, RegUNet, unet
 from monai.config import USE_COMPILED
-from monai.networks.blocks import Warp
+from monai.networks.blocks import Warp, DVF2DDF
 import torch
 from torch.nn import MSELoss
 from monai.transforms import LoadImage, Resize, EnsureChannelFirst, ScaleIntensityRangePercentiles
@@ -107,11 +107,15 @@ class Warper:
 		reg.train()
 		optimizerR = torch.optim.Adam(reg.parameters(), lr=lr)
 		print(dscolors.green+'optimizing'+dscolors.clear)
+
+		dvf_to_ddf = DVF2DDF()
+
 		for epoch in range(max_epochs):
 			optimizerR.zero_grad()
 			input_data = torch.cat((moving_ds, target_ds), dim=0)
 			input_data = input_data[None, ]
-			ddf_ds = reg(input_data)
+			dvf_ds = reg(input_data)
+			ddf_ds = dvf_to_ddf(dvf_ds)
 			image_moved = warp_layer(moving_ds[None, ], ddf_ds)
 			imgloss = image_loss(image_moved, target_ds[None, ])
 			regloss = reg_penalty * regularization(ddf_ds)
@@ -168,7 +172,7 @@ class Warper:
 		if jacobian_determinant_file is not None:
 			jdet = jacobian_determinant(self.ddf)
 			#write_nifti(jdet,'jdet.nii.gz',affine=self.target.affine)
-			nib.save(nib.Nifti1Image(jdet.detach().cpu().numpy(), self.target.affine), jacobian_determinant_file)
+			nib.save(nib.Nifti1Image(jdet, self.target.affine), jacobian_determinant_file)
 
 
 #####################
