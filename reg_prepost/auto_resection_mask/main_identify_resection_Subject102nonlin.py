@@ -40,7 +40,7 @@ error_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/
 error_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.nonlin.mask.nii.gz"
 error_init_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.nonlin.init.mask.nii.gz"
 
-error_mask_img_rigid = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.mask.nii.gz"
+error_mask_img_rigid = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/error_pre_post.init.mask.nii.gz"
 target_msk_file = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject102/target.mask.nii.gz"
 
 # rigidly warped image
@@ -96,10 +96,10 @@ vref = (255.0 / np.max(vref[msk > 0])) * vref
 
 # compute the error and smooth the error
 vwrp = np.sqrt((vref - vwrp) ** 2)
-vwrp = vwrp * (msk > 0)
 #vwrp = gaussian_filter(vwrp, sigma=1)
 
 nib.save(nib.Nifti1Image(vwrp, nonlin_reg.target.affine), error_img)
+vwrp = vwrp * (msk > 0)
 
 error_mask = vwrp > ERR_THR
 nib.save(
