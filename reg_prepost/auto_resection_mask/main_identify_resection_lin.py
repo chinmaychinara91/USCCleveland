@@ -12,34 +12,36 @@ import os
 import os.path
 import numpy as np
 from scipy.ndimage import gaussian_filter
-from skimage.morphology import remove_small_objects
+from skimage.morphology import remove_small_objects, opening
 
 
 BrainSuitePATH = "/home/ajoshi/BrainSuite23a"
-ERR_THR = 100
+ERR_THR = 80
+
+sub='106'
 
 rigid_reg = Aligner()
 
 
-mov_img_orig = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB111/sMRI/sub-SUB111-111_MRI.nii"
-mov_img = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB111/sMRI/sub-SUB111-111_MRI.bse.nii.gz"
-ref_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/T1s.bse.nii.gz"
-ref_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/T1s.mask.nii.gz"
-ref_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/T1s.pvc.frac.nii.gz"
-error_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/error_pre_post.nii.gz"
-error_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/error_pre_post.mask.nii.gz"
-error_init_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/error_pre_post.init.mask.nii.gz"
+mov_img_orig = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB"+sub+"/sMRI/sub-SUB"+sub+"-"+sub+"_MRI.nii"
+mov_img = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB"+sub+"/sMRI/sub-SUB"+sub+"-"+sub+"_MRI.bse.nii.gz"
+ref_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/T1s.bse.nii.gz"
+ref_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/T1s.mask.nii.gz"
+ref_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/T1s.pvc.frac.nii.gz"
+error_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/error_pre_post.nii.gz"
+error_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/error_pre_post.mask.nii.gz"
+error_init_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/error_pre_post.init.mask.nii.gz"
 
 
 # rigidly warped image
-rigid_reg_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/post2pre.nii.gz"
-rigid_reg_img_bse = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/post2pre.bse.nii.gz"
-rigid_reg_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/post2pre.mask.nii.gz"
-rigid_reg_img_bfc = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/post2pre.bfc.nii.gz"
-rigid_reg_img_pvc_label = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/post2pre.pvc.label.nii.gz"
-rigid_reg_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/post2pre.pvc.frac.nii.gz"
+rigid_reg_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/post2pre.nii.gz"
+rigid_reg_img_bse = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/post2pre.bse.nii.gz"
+rigid_reg_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/post2pre.mask.nii.gz"
+rigid_reg_img_bfc = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/post2pre.bfc.nii.gz"
+rigid_reg_img_pvc_label = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/post2pre.pvc.label.nii.gz"
+rigid_reg_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/post2pre.pvc.frac.nii.gz"
 
-ddf = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject111/ddf.nii.gz"
+ddf = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/ddf.nii.gz"
 
 
 rigid_reg.affine_reg(
@@ -121,8 +123,10 @@ vwrp = gaussian_filter(vwrp, sigma=1)
 
 nib.save(nib.Nifti1Image(vwrp, rigid_reg.target.affine), error_img)
 
-error_mask = vwrp > ERR_THR
+error_mask = opening(vwrp > ERR_THR)
 nib.save(nib.Nifti1Image(255*np.uint8(error_mask), rigid_reg.target.affine), error_init_mask_img)
+
+
 
 resection_mask = remove_small_objects(error_mask)
 nib.save(

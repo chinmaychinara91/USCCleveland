@@ -21,24 +21,25 @@ ERR_THR = 100
 rigid_reg = Aligner()
 
 
-mov_img_orig = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Ken_Post-op_MRI/sub-SUB106/sMRI/sub-SUB106-106_MRI.nii"
-mov_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Ken_Post-op_MRI/sub-SUB106/sMRI/sub-SUB106-106_MRI.bse.nii.gz"
-ref_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/T1s.bse.nii.gz"
-ref_img_mask = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/T1s.mask.nii.gz"
-ref_img_pvc_frac = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/T1s.pvc.frac.nii.gz"
-error_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/error_pre_post.nii.gz"
-error_mask_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/error_pre_post.mask.nii.gz"
+mov_img_orig = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB106/sMRI/sub-SUB106-106_MRI.nii"
+mov_img = "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB106/sMRI/sub-SUB106-106_MRI.bse.nii.gz"
+ref_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/T1s.bse.nii.gz"
+ref_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/T1s.mask.nii.gz"
+ref_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/T1s.pvc.frac.nii.gz"
+error_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/error_pre_post.nii.gz"
+error_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/error_pre_post.mask.nii.gz"
+error_init_mask_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/error_pre_post.init.mask.nii.gz"
 
 
 # rigidly warped image
-rigid_reg_img = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.nii.gz"
-rigid_reg_img_bse = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.bse.nii.gz"
-rigid_reg_img_mask = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.mask.nii.gz"
-rigid_reg_img_bfc = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.bfc.nii.gz"
-rigid_reg_img_pvc_label = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.pvc.label.nii.gz"
-rigid_reg_img_pvc_frac = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.pvc.frac.nii.gz"
+rigid_reg_img = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.nii.gz"
+rigid_reg_img_bse = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.bse.nii.gz"
+rigid_reg_img_mask = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.mask.nii.gz"
+rigid_reg_img_bfc = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.bfc.nii.gz"
+rigid_reg_img_pvc_label = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.pvc.label.nii.gz"
+rigid_reg_img_pvc_frac = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/post2pre.pvc.frac.nii.gz"
 
-ddf = "/ImagePTE1/ajoshi/HBM_Fingerprint_Data_For_Anand/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/ddf.nii.gz"
+ddf = "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject106/ddf.nii.gz"
 
 
 rigid_reg.affine_reg(
@@ -46,7 +47,7 @@ rigid_reg.affine_reg(
     moving_file=mov_img,
     output_file=rigid_reg_img_bse,
     ddf_file=ddf,
-    loss="mse",
+    loss="cc",
     nn_input_size=64,
     lr=1e-6,
     max_epochs=1500,
@@ -121,9 +122,9 @@ vwrp = gaussian_filter(vwrp, sigma=1)
 nib.save(nib.Nifti1Image(vwrp, rigid_reg.target.affine), error_img)
 
 error_mask = vwrp > ERR_THR
-nib.save(nib.Nifti1Image(np.int8(error_mask), rigid_reg.target.affine), error_mask_img)
+nib.save(nib.Nifti1Image(255*np.uint8(error_mask), rigid_reg.target.affine), error_init_mask_img)
 
 resection_mask = remove_small_objects(error_mask)
 nib.save(
-    nib.Nifti1Image(np.int8(resection_mask), rigid_reg.target.affine), error_mask_img
+    nib.Nifti1Image(255*np.uint8(resection_mask), rigid_reg.target.affine), error_mask_img
 )
