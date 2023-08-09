@@ -15,26 +15,25 @@ from scipy.ndimage import gaussian_filter
 from skimage.morphology import remove_small_objects, opening
 
 from warper import Warper
+import nibabel.processing as nibp
 
 BrainSuitePATH = "/home/ajoshi/BrainSuite23a"
 ERR_THR = 80
 rigid_reg = Aligner()
 
 
-sub = "106"
+pre_mri_base_orig = '/deneb_disk/auto_resection/data_8_4_2023/sub-M2003N6J/sMRI/sub-M2003N6J-M2003N6J_MRI'
+post_mri_base_orig ='/deneb_disk/auto_resection/data_8_4_2023/sub-M2003N6J/sMRI/sub-M2003N6J-M2003N6J_post_RS_MRI'
 
-pre_mri_base = (
-    "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject" + sub + "/T1s"
-)
-post_mri_base = (
-    "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB"
-    + sub
-    + "/sMRI/sub-SUB"
-    + sub
-    + "-"
-    + sub
-    + "_MRI"
-)
+pre_mri_base = pre_mri_base_orig +'_1mm'
+post_mri_base = post_mri_base_orig +'_1mm'
+
+out_img = nibp.conform(nib.load(pre_mri_base_orig+'.nii.gz'))
+out_img.to_filename(pre_mri_base + '.nii.gz')
+
+out_img = nibp.conform(nib.load(post_mri_base_orig+'.nii.gz'))
+out_img.to_filename(post_mri_base + '.nii.gz')
+
 
 
 pre_mri_dir, _ = os.path.split(pre_mri_base)
@@ -43,6 +42,86 @@ pre_mri_dir, _ = os.path.split(pre_mri_base)
 mov_img_orig = post_mri_base + ".nii.gz"
 if not os.path.isfile(mov_img_orig):
     mov_img_orig = post_mri_base + ".nii"
+
+
+# Pre MRI pre processing
+
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "bse")
+    + " -i "
+    + pre_mri_base + '.nii.gz'
+    + " -o "
+    + pre_mri_base + '.bse.nii.gz'
+    + " --prescale --auto --trim --mask "
+    + pre_mri_base + '.mask.nii.gz'
+)
+os.system(cmd)
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "bfc")
+    + " -i "
+    + pre_mri_base + '.bse.nii.gz'
+    + " -o "
+    + pre_mri_base + '.bfc.nii.gz'
+    + " --iterate -m "
+    + pre_mri_base + '.mask.nii.gz'
+)
+os.system(cmd)
+
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "pvc")
+    + " -i "
+    + pre_mri_base + '.bfc.nii.gz'
+    + " -o "
+    + pre_mri_base + '.pvc.label.nii.gz'
+    + " -f "
+    + pre_mri_base + '.pvc.frac.nii.gz'
+)
+os.system(cmd)
+
+
+
+# Post MRI pre processing
+
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "bse")
+    + " -i "
+    + post_mri_base + '.nii.gz'
+    + " -o "
+    + post_mri_base + '.bse.nii.gz'
+    + " --prescale --auto --trim --mask "
+    + post_mri_base + '.mask.nii.gz'
+)
+os.system(cmd)
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "bfc")
+    + " -i "
+    + post_mri_base + '.bse.nii.gz'
+    + " -o "
+    + post_mri_base + '.bfc.nii.gz'
+    + " --iterate -m "
+    + post_mri_base + '.mask.nii.gz'
+)
+os.system(cmd)
+
+
+cmd = (
+    os.path.join(BrainSuitePATH, "bin", "pvc")
+    + " -i "
+    + post_mri_base + '.bfc.nii.gz'
+    + " -o "
+    + post_mri_base + '.pvc.label.nii.gz'
+    + " -f "
+    + post_mri_base + '.pvc.frac.nii.gz'
+)
+os.system(cmd)
+
+
+
 
 # "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB"+sub+"/sMRI/sub-SUB"+sub+"-"+sub+"_MRI.nii"
 mov_img = post_mri_base + ".bse.nii.gz"
