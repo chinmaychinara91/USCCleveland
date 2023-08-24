@@ -124,9 +124,9 @@ os.system(cmd)
 
 
 # "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB"+sub+"/sMRI/sub-SUB"+sub+"-"+sub+"_MRI.nii"
-mov_img = post_mri_base + ".bse.nii.gz"
+mov_img = post_mri_base + ".pvc.frac.nii.gz"
 # "/deneb_disk/auto_resection/Ken_Post-op_MRI/sub-SUB"+sub+"/sMRI/sub-SUB"+sub+"-"+sub+"_MRI.bse.nii.gz"
-ref_img = pre_mri_base + ".bse.nii.gz"
+ref_img = pre_mri_base + ".pvc.frac.nii.gz"
 # "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/T1s.bse.nii.gz"
 ref_img_mask = pre_mri_base + ".mask.nii.gz"
 # "/deneb_disk/auto_resection/Andrew_Pre-op_MRI_and_EZ_Map/Subject"+sub+"/T1s.mask.nii.gz"
