@@ -12,7 +12,7 @@ from monai.transforms import (
     EnsureChannelFirst,
     ScaleIntensityRangePercentiles,
 )
-from monai.data.nifti_writer import write_nifti
+#from monai.data.nifti_writer import write_nifti
 from monai.losses.ssim_loss import SSIMLoss
 from monai.losses import (
     GlobalMutualInformationLoss,
@@ -93,7 +93,8 @@ class Warper:
         warped_labels = apply_warp(
             self.ddf[None,], label[None,], self.target[None,], interp_mode="nearest"
         )
-        write_nifti(warped_labels[0, 0], output_label_file, affine=self.target.affine)
+        #write_nifti(warped_labels[0, 0], output_label_file, affine=self.target.affine)
+        nib.save(nib.Nifti1Image(warped_labels[0, 0].detach().cpu().numpy(), self.target.affine), output_label_file)
 
     def nonlinear_reg(
         self,
@@ -287,7 +288,7 @@ def main():
         description="Nonlinear registration for mouse brains"
     )
     parser.add_argument("moving_file", type=str, help="moving file name")
-    parser.add_argument("fixed_file", type=str, help="fixed file name")
+    parser.add_argument("target_file", type=str, help="fixed file name")
     parser.add_argument("output_file", type=str, help="output file name")
     parser.add_argument(
         "--label-file", "--label", type=str, help="input label file name"
