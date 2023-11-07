@@ -1,5 +1,5 @@
 
-function outimg = ct2mrireg(ct_img,mr_img,out_img, hires)
+function out_img = ct2mrireg(ct_img,mr_img,out_img, hires)
 
 if ~exist('hires','var')
     hires=1;
