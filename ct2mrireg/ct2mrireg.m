@@ -20,7 +20,7 @@ mkdir(workDir);
 if hires~=0
     mr_img_hires = fullfile(workdir, ['hires_mr.nii.gz']);
     vct=load_untouch_nii_gz(ct_img);
-    vct.hdr.dime.pixdim(2:4)
+    % vct.hdr.dime.pixdim(2:4)
     % % Make the header look like BrainSuite header
     v=load_untouch_nii_gz(mr_img);
     v.hdr.hist.srow_x(1:3)=[v.hdr.dime.pixdim(2),0,0];
