@@ -1,5 +1,6 @@
 # ct2mrireg
 CT 2 MRI Registration using correlation ratio based on registration code writtern by Chitresh Bhushan.
+It requires Image Processing Toolbox.
 
 The registration is based on Correlation Ratio as the cost function.
 
