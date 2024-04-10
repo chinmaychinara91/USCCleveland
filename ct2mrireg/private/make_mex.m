@@ -1,0 +1,4 @@
+mex -v affine_transform_3dvol_double.c image_interpolation.c
+mex -v mutual_histogram_parzen_variable_size_multithread_double.c
+mex -v histogram_parzen_variable_size_multithread_double.c
+mex -v bspline_repeated_endpoint_deformation_3d_double_only_x.c
